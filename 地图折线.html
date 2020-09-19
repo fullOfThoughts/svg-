@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .demo {
+        width: 700px;
+        height: 400px;
+        border: 1px solid red;
+      }
+    </style>
+    <script>
+      window.onload = function () {
+        const demo = document.querySelector('.demo')
+        const svgNS = 'http://www.w3.org/2000/svg'
+        function createTag(tag, attrObj) {
+          const Tag = document.createElementNS(svgNS, tag)
+          for (key in attrObj) {
+            Tag.setAttribute(key, attrObj[key])
+          }
+          return Tag
+        }
+        const svg = createTag('svg', {
+          xmlns: 'http://www.w3.org/2000/svg',
+          width: '100%',
+          height: '100%',
+        })
+        demo.appendChild(svg)
+
+        let init = []
+        svg.addEventListener('mousedown', function qa(e) {
+          if (e.button === 0) {
+            svg.addEventListener('mousemove', go)
+            svg.innerHTML = ''
+            const x = e.offsetX
+            const y = e.offsetY
+            init = init.concat([x, y])
+            const polyline = createTag('polyline', {
+              points: init.toString(),
+              'stroke-width': '3',
+              stroke: 'red',
+              fill: 'none',
+            })
+            svg.appendChild(polyline)
+
+            // const circle = createTag('circle', {
+            //   cx: x.toString(),
+            //   cy: y.toString(),
+            //   fill: 'blue',
+            //   r: '10',
+            // })
+
+            // svg.appendChild(circle)
+            let arr = JSON.parse(JSON.stringify(init))
+
+            while (arr.length !== 0) {
+              const circle = createTag('circle', {
+                cx: arr[0],
+                cy: arr[1],
+                fill: 'hotpink',
+                r: '5',
+              })
+              svg.appendChild(circle)
+              arr = arr.splice(2)
+            }
+          } else if (e.button === 2) {
+            this.innerHTML = ''
+            const x = e.offsetX
+            const y = e.offsetY
+            init = init.concat([x, y])
+            const polyline = createTag('polyline', {
+              points: init.toString(),
+              'stroke-width': '3',
+              stroke: 'red',
+              fill: 'none',
+            })
+
+            this.appendChild(polyline)
+            let arr = JSON.parse(JSON.stringify(init))
+            while (arr.length !== 0) {
+              const circle = createTag('circle', {
+                cx: arr[0],
+                cy: arr[1],
+                fill: 'hotpink',
+                r: '5',
+              })
+              svg.appendChild(circle)
+              arr = arr.splice(2)
+            }
+            this.oncontextmenu = function (el) {
+              el.preventDefault()
+            }
+            svg.removeEventListener('mousemove', go)
+          }
+        })
+        svg.addEventListener('mousemove', go)
+        function go(e) {
+          svg.innerHTML = ''
+          const x = e.offsetX
+          const y = e.offsetY
+          const length = init.length
+
+          init = init.concat([x, y])
+          const polyline = createTag('polyline', {
+            points: init.toString(),
+            'stroke-width': '3',
+            stroke: 'red',
+            fill: 'none',
+          })
+
+          svg.appendChild(polyline)
+          let arr = JSON.parse(JSON.stringify(init))
+          while (arr.length !== 0) {
+            const circle = createTag('circle', {
+              cx: arr[0],
+              cy: arr[1],
+              fill: 'hotpink',
+              r: '5',
+            })
+            svg.appendChild(circle)
+            arr = arr.splice(2)
+          }
+          init = init.splice(0, init.length - 2)
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="demo"></div>
+  </body>
+</html>
